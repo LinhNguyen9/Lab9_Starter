@@ -50,6 +50,14 @@
 </head>
 
 <body>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "520f8561fff34afd938d1686b03c7b51"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                        
   <main>
     <form>
       <fieldset>
@@ -91,17 +99,126 @@
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try{
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+        if(isNaN(firstNum) || isNaN(secondNum)){
+          throw new Error("Invalid input");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      }catch(error){
+        console.log(error);
+      }finally{
+        console.log("finally");
+      }
+      
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    errorBtns[0].addEventListener('click', () => {
+      console.log("Console Log Demo");
+    });
+    errorBtns[1].addEventListener('click', () => {
+      console.error("Console Error Demo");
+    });
+    errorBtns[2].addEventListener('click', () => {
+      console.count("Count Button");
+    });
+    errorBtns[3].addEventListener('click', () => {
+      console.warn("Console Warn Button");
+    });
+    errorBtns[4].addEventListener('click', () => {
+      const x = 5;
+      const y = 3;
+      const reason = 'x is expected to be less than y';
+      console.assert(x < y, {x, y, reason});
+    });
+    errorBtns[5].addEventListener('click', () => {
+      console.clear();
+    });
+    errorBtns[6].addEventListener('click', () => {
+      console.dir(errorBtns[0]); //check again
+    });
+    errorBtns[7].addEventListener('click', () => {
+      console.dirxml(errorBtns[0]);
+    });
+    errorBtns[8].addEventListener('click', () => {
+      console.group('Group messages together');
+    });
+    errorBtns[9].addEventListener('click', () => {
+      console.groupEnd();
+    });
+    errorBtns[10].addEventListener('click', () => {
+      var people = [
+        {
+          first: 'Linh',
+          last: 'Nguyen',
+          birthday: '10-30-1998',
+        },
+        {
+          first: 'Kristy',
+          last: 'Lam',
+          birthday: '02-19-1995',
+        },
+        {
+          first: 'Thu',
+          last: 'Tran',
+          birthday: '02-31-1999',
+        }
+      ];
+      console.table(people);
+    });
+    errorBtns[11].addEventListener('click', () => {
+      console.time("Timer");
+    });
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd("Timer");
+    });
+    errorBtns[13].addEventListener('click', () => {
+      const first = () => { second(); };
+      const second = () => { third(); };
+      const third = () => { console.trace(); };
+      first();
+    });
+
+    // Trigger a global error
+    window.onerror = function (message, source, line, col, error) {
+      console.log("Global error: " + error.message + ", lineno: " + line + ", col: " + col);
+      return true;
+    };
+
+    function triggerError() {
+      throw new Error('Trigger a global error');
+    }
+
+    triggerError();
+
+    // extend error
+    class textError extends Error {
+      constructor(message) {
+        super(message); // (1)
+        this.name = "textError"; // (2)
+      }
+    }
+
+    try {
+      throw new textError("Check text");
+    }catch(error){
+      console.error(error);
+    }
+
+    window.onerror = function (message, source, line, col, error) {
+      console.log(error.message + ", lineno: " + line + ", col: " + col);
+      return true;
+    };
+
+    TrackJS.track('Testing TrackJS!');
+                        
   </script>
 </body>
 
